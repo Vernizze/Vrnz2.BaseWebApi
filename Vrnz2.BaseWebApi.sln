@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30717.126
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vrnz2.BaseWebApi", "Vrnz2.BaseWebApi\Vrnz2.BaseWebApi.csproj", "{9EF70AB2-4901-4C68-B2F1-8BC455A50DC9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9EF70AB2-4901-4C68-B2F1-8BC455A50DC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9EF70AB2-4901-4C68-B2F1-8BC455A50DC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9EF70AB2-4901-4C68-B2F1-8BC455A50DC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9EF70AB2-4901-4C68-B2F1-8BC455A50DC9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9DC88C2D-F5BA-4331-80BF-CDDF657A0758}
+	EndGlobalSection
+EndGlobal

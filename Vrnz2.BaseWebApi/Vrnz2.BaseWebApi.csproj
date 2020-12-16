@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+    <PackageReference Include="Serilog" Version="2.10.0" />
+    <PackageReference Include="Vrnz2.BaseContracts" Version="1.0.0" />
+    <PackageReference Include="Vrnz2.BaseInfra" Version="1.0.1" />
+  </ItemGroup>
+
+</Project>
