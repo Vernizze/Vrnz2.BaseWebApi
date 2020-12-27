@@ -31,7 +31,7 @@ namespace Vrnz2.BaseWebApi.Helpers
 
         #region Methods
 
-        public async Task<ObjectResult> ReturnAsync<TRequest, TResult>(Func<TRequest, Task<TResult>> action, TRequest request)
+        public async Task<ObjectResult> ReturnAsync<TRequest, TResult>(Func<TRequest, Task<TResult>> action, TRequest request, int? successStatusCode)
             where TRequest : BaseDTO.Request
         {
             try
@@ -42,7 +42,12 @@ namespace Vrnz2.BaseWebApi.Helpers
                 {
                     var response = await action(request);
 
-                    return new OkObjectResult(response);
+                    var result = new OkObjectResult(response);
+
+                    if (successStatusCode.HasValue)
+                        result.StatusCode = successStatusCode;
+
+                    return result;
                 }
                 else if (validation.ErrorCodes.Contains(MessageCodesFactory.UNEXPECTED_ERROR))
                 {
