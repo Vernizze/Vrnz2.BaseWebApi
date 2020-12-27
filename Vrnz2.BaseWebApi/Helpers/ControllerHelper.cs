@@ -2,6 +2,7 @@
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using Vrnz2.BaseContracts.DTOs.Base;
 using Vrnz2.BaseInfra.MessageCodes;
@@ -31,7 +32,7 @@ namespace Vrnz2.BaseWebApi.Helpers
 
         #region Methods
 
-        public async Task<ObjectResult> ReturnAsync<TRequest, TResult>(Func<TRequest, Task<TResult>> action, TRequest request, int? successStatusCode)
+        public async Task<ObjectResult> ReturnAsync<TRequest, TResult>(Func<TRequest, Task<TResult>> action, TRequest request, int successStatusCode = (int)HttpStatusCode.OK)
             where TRequest : BaseDTO.Request
         {
             try
@@ -42,10 +43,10 @@ namespace Vrnz2.BaseWebApi.Helpers
                 {
                     var response = await action(request);
 
-                    var result = new OkObjectResult(response);
-
-                    if (successStatusCode.HasValue)
-                        result.StatusCode = successStatusCode;
+                    var result = new OkObjectResult(response) 
+                    { 
+                        StatusCode = successStatusCode 
+                    };
 
                     return result;
                 }
