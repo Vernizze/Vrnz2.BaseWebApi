@@ -8,6 +8,7 @@ using Vrnz2.BaseContracts.DTOs.Base;
 using Vrnz2.BaseInfra.MessageCodes;
 using Vrnz2.BaseInfra.Validations;
 using Vrnz2.BaseWebApi.CustomResults;
+using Vrnz2.Infra.CrossCutting.Extensions;
 
 namespace Vrnz2.BaseWebApi.Helpers
 {
@@ -43,30 +44,41 @@ namespace Vrnz2.BaseWebApi.Helpers
                 if (validation.IsValid)
                 {
                     var response = await action(request);
-
-                    var result = new OkObjectResult(response) 
-                    { 
-                        StatusCode = successStatusCode 
-                    };
-
-                    return result;
+                    
+                    switch ((HttpStatusCode)response.StatusCode)
+                    {
+                        case HttpStatusCode statusCode when statusCode.IsSuccessHttpStatusCode():
+                            return new OkObjectResult(response) { StatusCode = successStatusCode };
+                        case HttpStatusCode.Unauthorized:
+                            return new UnauthorizedObjectResult(response);
+                        case HttpStatusCode.Forbidden:
+                            return new ForbidenObjectResult(response);
+                        default:
+                            return GetBadRequestObjectResult(new List<string> { $"Unexpected error!" });
+                    }
                 }
                 else if (validation.ErrorCodes.Contains(MessageCodesFactory.UNEXPECTED_ERROR))
                 {
-                    return new InternalServerErrorObjectResult(validation.ErrorCodes);
+                    return GetInternalServerErrorObjectResult(validation.ErrorCodes);
                 }
                 else
                 {
-                    return new BadRequestObjectResult(validation.ErrorCodes);
+                    return GetBadRequestObjectResult(validation.ErrorCodes);
                 }
             }
             catch (Exception ex)
             {
                 _logger.Error($"Unexpected error! - Message: {ex.Message}", ex);
 
-                return new InternalServerErrorObjectResult(new List<string> { $"Unexpected error! - Message: {ex.Message}" });
+                return GetBadRequestObjectResult(new List<string> { $"Unexpected error! - Message: {ex.Message}" });
             }
         }
+
+        private InternalServerErrorObjectResult GetInternalServerErrorObjectResult(List<string> errorCodes) 
+            => new InternalServerErrorObjectResult(errorCodes);
+
+        private BadRequestObjectResult GetBadRequestObjectResult(List<string> errorCodes) 
+            => new BadRequestObjectResult(errorCodes);
 
         #endregion
     }
