@@ -34,6 +34,7 @@ namespace Vrnz2.BaseWebApi.Helpers
 
         public async Task<ObjectResult> ReturnAsync<TRequest, TResult>(Func<TRequest, Task<TResult>> action, TRequest request, int successStatusCode = (int)HttpStatusCode.OK)
             where TRequest : BaseDTO.Request
+            where TResult : BaseDTO.Response<TRequest>
         {
             try
             {
