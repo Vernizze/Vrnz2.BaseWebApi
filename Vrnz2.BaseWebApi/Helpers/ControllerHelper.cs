@@ -33,13 +33,13 @@ namespace Vrnz2.BaseWebApi.Helpers
 
         #region Methods
 
-        public async Task<ObjectResult> ReturnAsync<TRequest, TResult, T>(Func<TRequest, Task<TResult>> action, TRequest request, int successStatusCode = (int)HttpStatusCode.OK)
+        public async Task<ObjectResult> ReturnAsync<TRequest, TResult, T>(Func<TRequest, Task<TResult>> action, TRequest request, int successStatusCode = (int)HttpStatusCode.OK, bool ignoreMessageCodesFactory = false)
             where TRequest : BaseDTO.Request
             where TResult : BaseDTO.Response<T>
         {
             try
             {
-                var validation = _validationHelper.Validate(request);
+                var validation = _validationHelper.Validate(request, ignoreMessageCodesFactory);
 
                 if (validation.IsValid) 
                 {
