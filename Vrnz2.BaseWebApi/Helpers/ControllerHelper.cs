@@ -39,19 +39,33 @@ namespace Vrnz2.BaseWebApi.Helpers
         {
             try
             {
-                var response = await action(request);
+                var validation = _validationHelper.Validate(request);
 
-                switch ((HttpStatusCode)response.StatusCode)
+                if (validation.IsValid) 
                 {
-                    case HttpStatusCode statusCode when statusCode.IsSuccessHttpStatusCode():
-                        return new OkObjectResult(response) { StatusCode = successStatusCode };
-                    case HttpStatusCode.Unauthorized:
-                        return new UnauthorizedObjectResult(response);
-                    case HttpStatusCode.Forbidden:
-                        return new ForbidenObjectResult(response);
-                    default:
-                        return GetBadRequestObjectResult(new List<string> { response.Message });
+                    var response = await action(request);
+
+                    switch ((HttpStatusCode)response.StatusCode)
+                    {
+                        case HttpStatusCode statusCode when statusCode.IsSuccessHttpStatusCode():
+                            return new OkObjectResult(response) { StatusCode = successStatusCode };
+                        case HttpStatusCode.Unauthorized:
+                            return new UnauthorizedObjectResult(response);
+                        case HttpStatusCode.Forbidden:
+                            return new ForbidenObjectResult(response);
+                        default:
+                            return GetBadRequestObjectResult(new List<string> { response.Message });
+                    }
                 }
+                else if (validation.ErrorCodes.Contains(MessageCodesFactory.UNEXPECTED_ERROR))
+                {
+                    return GetInternalServerErrorObjectResult(validation.ErrorCodes);
+                }
+                else
+                {
+                    return GetBadRequestObjectResult(validation.ErrorCodes);
+                }
+
             }
             catch (Exception ex)
             {
