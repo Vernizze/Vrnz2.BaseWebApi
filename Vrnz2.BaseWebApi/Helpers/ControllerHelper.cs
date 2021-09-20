@@ -33,44 +33,31 @@ namespace Vrnz2.BaseWebApi.Helpers
 
         #region Methods
 
-        public async Task<ObjectResult> ReturnAsync<TRequest, TResult>(Func<TRequest, Task<TResult>> action, TRequest request, int successStatusCode = (int)HttpStatusCode.OK)
+        public async Task<ObjectResult> ReturnAsync<TRequest, TResult, T>(Func<TRequest, Task<TResult>> action, TRequest request, int successStatusCode = (int)HttpStatusCode.OK)
             where TRequest : BaseDTO.Request
-            where TResult : BaseDTO.Response<TRequest>
+            where TResult : BaseDTO.Response<T>
         {
             try
             {
-                var validation = _validationHelper.Validate(request);
+                var response = await action(request);
 
-                if (validation.IsValid)
+                switch ((HttpStatusCode)response.StatusCode)
                 {
-                    var response = await action(request);
-                    
-                    switch ((HttpStatusCode)response.StatusCode)
-                    {
-                        case HttpStatusCode statusCode when statusCode.IsSuccessHttpStatusCode():
-                            return new OkObjectResult(response) { StatusCode = successStatusCode };
-                        case HttpStatusCode.Unauthorized:
-                            return new UnauthorizedObjectResult(response);
-                        case HttpStatusCode.Forbidden:
-                            return new ForbidenObjectResult(response);
-                        default:
-                            return GetBadRequestObjectResult(new List<string> { $"Unexpected error!" });
-                    }
-                }
-                else if (validation.ErrorCodes.Contains(MessageCodesFactory.UNEXPECTED_ERROR))
-                {
-                    return GetInternalServerErrorObjectResult(validation.ErrorCodes);
-                }
-                else
-                {
-                    return GetBadRequestObjectResult(validation.ErrorCodes);
+                    case HttpStatusCode statusCode when statusCode.IsSuccessHttpStatusCode():
+                        return new OkObjectResult(response) { StatusCode = successStatusCode };
+                    case HttpStatusCode.Unauthorized:
+                        return new UnauthorizedObjectResult(response);
+                    case HttpStatusCode.Forbidden:
+                        return new ForbidenObjectResult(response);
+                    default:
+                        return GetBadRequestObjectResult(new List<string> { response.Message });
                 }
             }
             catch (Exception ex)
             {
                 _logger.Error($"Unexpected error! - Message: {ex.Message}", ex);
 
-                return GetBadRequestObjectResult(new List<string> { $"Unexpected error! - Message: {ex.Message}" });
+                return GetInternalServerErrorObjectResult(new List<string> { $"Unexpected error! - Message: {ex.Message}" });
             }
         }
 
