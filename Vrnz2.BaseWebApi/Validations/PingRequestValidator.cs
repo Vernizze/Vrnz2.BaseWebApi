@@ -1,9 +1,10 @@
 ﻿using FluentValidation;
+using Vrnz2.BaseContracts.DTOs;
 
 namespace Vrnz2.BaseWebApi.Validations
 {
     public class PingRequestValidator
-        : AbstractValidator<BaseContracts.DTOs.Ping.Request>
+        : AbstractValidator<Ping.Request>
     {
         #region Constructors
 

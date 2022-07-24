@@ -1,19 +1,26 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.0.12</Version>
-    <AssemblyVersion>1.0.12.0</AssemblyVersion>
-    <FileVersion>1.0.12.0</FileVersion>
+    <Version>2.0.0</Version>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.17" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
-    <PackageReference Include="Serilog" Version="2.10.0" />
-    <PackageReference Include="Vrnz2.BaseContracts" Version="1.0.3" />
-    <PackageReference Include="Vrnz2.BaseInfra" Version="1.0.8" />
-    <PackageReference Include="Vrnz2.Infra.Crosscutting" Version="1.0.28" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0" />
+    <PackageReference Include="Microsoft.OpenApi" Version="1.3.2" />
+    <PackageReference Include="Serilog" Version="2.11.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.4.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.4.0" />
+    <PackageReference Include="Vrnz2.BaseContracts" Version="2.0.0" />
+    <PackageReference Include="Vrnz2.BaseInfra" Version="2.0.0" />
+    <PackageReference Include="Vrnz2.Infra.Crosscutting" Version="2.0.0" />
+    <PackageReference Include="Vrnz2.Security" Version="1.0.0" />
   </ItemGroup>
 
 </Project>
