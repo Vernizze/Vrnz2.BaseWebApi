@@ -4,6 +4,7 @@ using Vrnz2.BaseContracts.DTOs;
 using Vrnz2.BaseInfra.Validations;
 using Vrnz2.BaseWebApi.Helpers;
 using Vrnz2.BaseWebApi.Validations;
+using Vrnz2.Security.Helpers.TokenHelper;
 
 namespace Vrnz2.BaseWebApi.Extensions
 {
@@ -14,6 +15,7 @@ namespace Vrnz2.BaseWebApi.Extensions
                 .AddScoped<IValidatorFactory, ValidatorFactory>()
                 .AddScoped<ValidationHelper>()
                 .AddScoped<IControllerHelper, ControllerHelper>()
-                .AddTransient<IValidator<Ping.Request>, PingRequestValidator>();
+                .AddTransient<IValidator<Ping.Request>, PingRequestValidator>()
+                .AddScoped<ITokenHelper, TokenHelper>();
     }
 }
