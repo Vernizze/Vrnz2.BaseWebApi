@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
@@ -22,7 +24,7 @@ namespace Vrnz2.BaseWebApi.Extensions
             services
                 .AddSwaggerGen(c =>
                 {
-                    c.SwaggerDoc(apiVersion, new OpenApiInfo { Title = Environment.GetEnvironmentVariable("API_NAME"), Version = apiVersion });
+                    //c.SwaggerDoc(apiVersion, new OpenApiInfo { Title = Environment.GetEnvironmentVariable("API_NAME"), Version = apiVersion });
                     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                     {
                         In = ParameterLocation.Header,
@@ -52,23 +54,36 @@ namespace Vrnz2.BaseWebApi.Extensions
             return services;
         }
 
-        public static IApplicationBuilder AddOpenApi(this IApplicationBuilder app, IApiVersionDescriptionProvider provider, WebApiSettings webApiSettings)
+        public static IApplicationBuilder Configure(this IApplicationBuilder app, WebApiSettings webApiSettings)
         {
-            /*
-It worked when relative endpoint is specified.
-app.UseSwaggerUI(c => {c.SwaggerEndpoint("../swagger/v1/swagger.json", "your service name V1"); });
-Also, need to set RouteTemplate
-app.UseSwagger(c =>{ c.RouteTemplate = "swagger/{documentName}/swagger.json"; });             
-             */
-            app
+            var provider = app.ApplicationServices.GetService<IApiVersionDescriptionProvider>();
+            var env = app.ApplicationServices.GetService<IWebHostEnvironment>();
+
+            if (env.IsDevelopment())
+                app.UseDeveloperExceptionPage();
+
+            return app
+                .UseHttpsRedirection()
+                .UseRouting()
+                /*
+                It worked when relative endpoint is specified.
+                app.UseSwaggerUI(c => {c.SwaggerEndpoint("../swagger/v1/swagger.json", "your service name V1"); });
+                Also, need to set RouteTemplate
+                app.UseSwagger(c =>{ c.RouteTemplate = "swagger/{documentName}/swagger.json"; });             
+                 */
                 .UseSwagger()
                 .UseSwaggerUI(c =>
                 {
                     foreach (var desc in provider.ApiVersionDescriptions)
                         c.SwaggerEndpoint(string.Format(webApiSettings.OpenApiAddress, desc.GroupName), string.Concat(webApiSettings.ApiName, " ", desc.GroupName));
+                })
+                .UseAuthentication()
+                .UseAuthorization()
+                .UseEndpoints(endpoints =>
+                {
+                    endpoints.MapHealthChecks("/health");
+                    endpoints.MapControllers();
                 });
-
-            return app;
         }
     }
 
